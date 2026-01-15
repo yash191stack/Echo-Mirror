@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE ECHO MIRROR - Turning Sound Into Sight</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1><i class="fas fa-microphone-alt"></i> THE ECHO MIRROR <i class="fas fa-eye"></i></h1>
+            <p class="tagline">Turning sound into sight</p>
+        </header>
+
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="live-analysis">Live Analysis</button>
+            <button class="tab-button" data-tab="sound-timeline">Sound Timeline</button>
+            <button class="tab-button" data-tab="transparency-info">Transparency Info</button>
+        </div>
+
+        <div id="live-analysis" class="tab-content active">
+            <button id="startButton" class="control-button pulse-effect"><i class="fas fa-play-circle"></i> Start Echo Mirror</button>
+            <button id="stopButton" class="control-button stop-effect"><i class="fas fa-stop-circle"></i> Stop Echo Mirror</button>
+
+            <div class="visualizer-section">
+                <canvas id="audioCanvas"></canvas>
+                <div id="currentSoundFeedback" class="current-sound-feedback">No Sound Detected</div>
+            </div>
+
+            <div class="dashboard grid-layout">
+                <div class="metric-card highlight-card">
+                    <p class="metric-label">Loudness <span class="estimated-label">(Estimated)</span></p>
+                    <p class="metric-value large" id="loudness">0.0</p>
+                    <div class="level-meter" id="loudnessMeter"><div class="level-fill"></div></div>
+                </div>
+                <div class="metric-card highlight-card">
+                    <p class="metric-label">Dominant Frequency <span class="estimated-label">(Estimated)</span></p>
+                    <p class="metric-value large" id="dominantFrequency">-- Hz</p>
+                    <p class="sub-metric" id="frequencyRange">Range: N/A</p>
+                </div>
+                <div class="metric-card">
+                    <p class="metric-label">Likely Sound Type</p>
+                    <p class="metric-value" id="soundType">--</p>
+                    <p class="sub-metric" id="soundTypeConfidence">Confidence: --%</p>
+                </div>
+                <div class="metric-card">
+                    <p class="metric-label">Estimated Distance</p>
+                    <p class="metric-value" id="estimatedDistance">--</p>
+                </div>
+                <div class="metric-card">
+                    <p class="metric-label">Estimated Pitch <span class="estimated-label">(Voice-like)</span></p>
+                    <p class="metric-value" id="estimatedPitch">-- Hz</p>
+                    <p class="sub-metric" id="voiceCharacteristic">Character: N/A</p>
+                </div>
+                <div class="metric-card direction-card">
+                    <p class="metric-label">Direction</p>
+                    <div class="direction-visualizer">
+                        <span id="directionLeft" class="direction-indicator">LEFT</span>
+                        <span id="directionCenter" class="direction-indicator active">CENTER</span>
+                        <span id="directionRight" class="direction-indicator">RIGHT</span>
+                    </div>
+                    <p class="sub-metric" id="directionText">--</p>
+                </div>
+                <div class="metric-card controls-compact">
+                    <p class="metric-label">Sensitivity</p>
+                    <input type="range" id="sensitivity" min="0" max="100" value="50">
+                    <div class="control-group-inline">
+                        <input type="checkbox" id="ignoreAmbientNoise">
+                        <label for="ignoreAmbientNoise">Ignore Ambient Noise</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sound-timeline" class="tab-content">
+            <h2><i class="fas fa-history"></i> Sound Event Timeline</h2>
+            <p class="timeline-info">Review past detected sound events. Data is stored locally and persists across sessions.</p>
+            <ul id="soundTimelineList" class="timeline-list">
+                <li class="timeline-placeholder">No events recorded yet. Start the Mirror and make some noise!</li>
+            </ul>
+            <button id="clearTimelineButton" class="control-button secondary-button"><i class="fas fa-trash-alt"></i> Clear Timeline</button>
+        </div>
+
+        <div id="transparency-info" class="tab-content">
+            <h2><i class="fas fa-info-circle"></i> Transparency Panel: Understanding The Echo Mirror</h2>
+            <p class="info-paragraph">The Echo Mirror provides real-time estimations of sound properties using your device's microphone. Due to hardware limitations, all outputs are *estimated* and should not be considered scientifically precise. Our goal is accessibility through intuitive visual feedback.</p>
+            
+            <div class="transparency-section">
+                <h3>What The Echo Mirror can estimate:</h3>
+                <ul>
+                    <li><strong>Loudness:</strong> Real-time estimation of sound intensity.</li>
+                    <li><strong>Dominant Frequency:</strong> The most prominent frequency in the sound, estimated in Hz.</li>
+                    <li><strong>Frequency Range:</strong> General classification into low, mid, or high frequencies.</li>
+                    <li><strong>Likely Sound Type:</strong> Best-effort classification (e.g., "Clap / Bang-like", "Instrument / Tone-like", "Voice-like", "Ambient / Noise-like") with a confidence percentage. This is an estimation, not exact identification.</li>
+                    <li><strong>Estimated Distance:</strong> Approximate distance based on loudness (Very Close, Near, Far). This is an estimation, not exact meters or units.</li>
+                    <li><strong>Direction (Left/Right):</strong> An attempt to detect sound direction using stereo channels. Displays "Direction unavailable" if data is unreliable or mono.</li>
+                </ul>
+            </div>
+
+            <div class="transparency-section">
+                <h3>What cannot be reliably detected on laptops:</h3>
+                <ul>
+                    <li><strong>Exact Sound Identification:</strong> Cannot identify specific objects, spoken words, or individual voices.</li>
+                    <li><strong>Precise Distance Measurement:</strong> Laptop microphones lack the calibration and array needed for accurate distance in units.</li>
+                    <li><strong>Highly Accurate Direction:</strong> Limited stereo separation makes precise angular direction detection very challenging and unreliable.</li>
+                    <li><strong>Complex Sound Scene Analysis:</strong> Distinguishing multiple simultaneous sound sources or complex acoustic environments is beyond typical laptop microphone capabilities.</li>
+                    <li><strong>Specific Instrument/Voice Recognition:</strong> Cannot differentiate between types of instruments or specific people speaking.</li>
+                </ul>
+            </div>
+            <p class="disclaimer">Remember: The Echo Mirror is an accessibility and awareness tool, designed for visual feedback and estimation, not scientific measurement or perfect identification.</p>
+        </div>
+    </div>
+
+    <div id="soundEventAlert" class="sound-event-alert"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
